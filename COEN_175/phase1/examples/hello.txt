@@ -23,14 +23,9 @@ operator )
 operator {
 identifier printf
 operator (
-"identifier Hello
+string "Hello, world.%c"
 operator ,
-identifier world
-operator .
-operator %
-identifier c
-"operator ,
-'\identifier n
-'operator )
+character '\n'
+operator )
 operator ;
 operator }

@@ -7,7 +7,8 @@ DIGIT   0|[1-9][0-9]*
 HEX     (0x|0X)DIGIT[a-fA-F]
 ID      [a-zA-Z_][a-zA-Z_0-9]*
 IGNORED [ \t\n]+ 
-STRING  
+STRING  ["][^"]*["]
+CHAR    ['][^']*[']
 
 %%
 "auto" {
@@ -276,6 +277,10 @@ STRING
 
 {STRING} {
     std::cout << "string " << yytext << std::endl;
+}
+
+{CHAR}  {
+    std::cout << "character " << yytext << std::endl;
 }
 
 {IGNORED} {
