@@ -1,0 +1,36 @@
+/* tricky.c */
+
+/***
+ *** a tricky comment ******/
+
+keyword int
+ prkeyword int
+f(keyword char
+ *s, ...);
+
+keyword int
+ main(keyword void
+)
+{
+    keyword auto
+ keyword int
+ a, b, c;
+    keyword unsigned
+ keyword long
+ keyword long
+_keyword int
+;
+
+    a = decimal 0
+;
+    b = decimal 123
+;
+    c = decimal 0
+xdecimal 123
+aF;
+
+    prkeyword int
+f("I said \"hello there\"");
+    prkeyword int
+f("I said %chello there%c", '\'', '\'');
+}
