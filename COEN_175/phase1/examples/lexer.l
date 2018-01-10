@@ -1,14 +1,17 @@
 %{
     #include <iostream>
+
+    static void skip_line_comment();
+    static void skip_multiple_line_comment();
 %}
 
 %option noyywrap
 DIGIT   0|[1-9][0-9]*
-HEX     (0x|0X)DIGIT[a-fA-F]
+HEX     (0x|0X){DIGIT}[a-fA-F]*
 ID      [a-zA-Z_][a-zA-Z_0-9]*
 IGNORED [ \t\n]+ 
-STRING  ["][^"]*["]
-CHAR    ['][^']*[']
+CHAR    '([^'\\\n]|\\.)'
+STRING  \"([^\\\"]|\\.)*\"
 
 %%
 "auto" {
@@ -287,9 +290,56 @@ CHAR    ['][^']*[']
     std::cout << "";
 }
 
+"//" { 
+    skip_line_comment();
+}
+
+"/*" {
+    skip_multiple_line_comment();
+}
+
 %%
+
+static void string_find() {
+    
+}
+
+static void skip_line_comment() {
+    int c;
+
+    while((c = yyinput()) != '\n' && c != EOF)
+        ;
+    if(c == EOF)
+        unput(c);
+}
+
+static void skip_multiple_line_comment() {
+    
+  register int c;
+
+  for ( ; ; )
+  {
+      while ( (c = yyinput()) != '*' && c != EOF )
+          ;    
+
+      if ( c == '*' )
+          {
+              while ( (c = yyinput()) == '*' )
+                ;
+              if ( c == '/' )
+                break;    /* found the end */
+          }
+
+      if ( c == EOF )
+          {
+              perror( "EOF in comment" );
+              break;
+          }
+  }
+      
+}
 
 int main() {
     yylex();
-    return 1;
+    return 0;
 }
