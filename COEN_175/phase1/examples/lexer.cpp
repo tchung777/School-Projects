@@ -2378,22 +2378,22 @@ static void skip_line_comment() {
 
 static void skip_multiple_line_comment() {
     
-  register int c;
+    int read;
 
-  for ( ; ; )
-  {
-      while ( (c = yyinput()) != '*' && c != EOF )
+    while(1)
+    {
+      while ( (read = yyinput()) != '*' && read != EOF )
           ;    
 
-      if ( c == '*' )
+      if ( read == '*' )
           {
-              while ( (c = yyinput()) == '*' )
+              while ( (read = yyinput()) == '*' )
                 ;
-              if ( c == '/' )
+              if ( read == '/' )
                 break;    /* found the end */
           }
 
-      if ( c == EOF )
+      if ( read == EOF )
           {
               perror( "EOF in comment" );
               break;
