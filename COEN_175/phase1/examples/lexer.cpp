@@ -2368,12 +2368,12 @@ static void string_find() {
 }
 
 static void skip_line_comment() {
-    int c;
+    int read;
 
-    while((c = yyinput()) != '\n' && c != EOF)
+    while((read = yyinput()) != '\n' && read != EOF)
         ;
-    if(c == EOF)
-        unput(c);
+    if(read == EOF)
+        unput(read);
 }
 
 static void skip_multiple_line_comment() {
@@ -2382,23 +2382,21 @@ static void skip_multiple_line_comment() {
 
     while(1)
     {
-      while ( (read = yyinput()) != '*' && read != EOF )
-          ;    
+        while ( (read = yyinput()) != '*' && read != EOF )
+            ;    
+        if ( read == '*' ) {
 
-      if ( read == '*' )
-          {
-              while ( (read = yyinput()) == '*' )
+            while ( (read = yyinput()) == '*' )
                 ;
-              if ( read == '/' )
+            if ( read == '/' )
                 break;    /* found the end */
-          }
+        }
 
-      if ( read == EOF )
-          {
-              perror( "EOF in comment" );
-              break;
-          }
-  }
+        if ( read == EOF ) {
+            perror( "EOF in comment" );
+            break;
+        }
+    }
       
 }
 
