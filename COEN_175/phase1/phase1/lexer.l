@@ -300,19 +300,13 @@ STRING  \"([^\\\"]|\\.)*\"
 }
 
 . {
-    std::cerr << "illegal character " << yytext << std::endl;
+    std::cerr << yytext << std::endl;
 }
 
 %%
 
-static void check_string() {
-    do {
-        c = yyinput()
-    } while((c != '"' || p == '\\') && c != '\n' && c != EOF)
-
-    if(c == '\n' || c == EOF)
-        std::cerr << "malformed string literal" << std:endl;
-
+static void string_find() {
+    
 }
 
 static void skip_line_comment() {

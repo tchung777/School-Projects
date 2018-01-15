@@ -1,8 +1,5 @@
 #!/bin/bash
 
-lex -t lexer.l > lexer.cpp
-g++ -o scc lexer.cpp
-
 array=("tricky" "hello" "fib" "list" "malloc" "sum")
 
 for i in "${array[@]}"

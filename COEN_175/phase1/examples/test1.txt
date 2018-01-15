@@ -1,0 +1,5 @@
+string "🍆"
+identifier test
+identifier et
+keyword while
+string "hi"
