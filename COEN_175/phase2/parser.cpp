@@ -41,7 +41,7 @@ static void exprAND()
   }
 }
 
-static void exprEQ()
+void exprEQ()
 {
   exprCMP();
   while(1) {
@@ -161,8 +161,33 @@ static void exprPRIMARY() {
     cout << lookahead << endl;
 }
 
+//-----------------------------------------------------------------------------------------------------
+
+void ptrs() {
+    while(lookahead == '*') {
+        match('*');
+    }
+}
+
+void declarator() {
+    ptrs();
+    match(ID);
+    if(lookahead == '[') { 
+        match('[');
+        match(NUM);
+        match(']');
+    } else {
+        ; //Do nothing.
+    }
+}
+
 int main() {
+  //Set the lookahead to yylex() to begin scanning.
   lookahead = yylex();
-  while(lookahead != 0) 
+
+  //While we haven't reach EOF.
+  while(lookahead != 0) {
+    // Kick off the process with exprOR.
     exprOR();
+  }
 }

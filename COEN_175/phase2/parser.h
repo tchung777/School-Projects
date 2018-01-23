@@ -9,3 +9,4 @@ static void exprMULT();
 static void exprPREFIX();
 static void exprPOSFIX();
 static void exprPRIMARY();
+int main();
