@@ -1,23 +1,10 @@
 # include <cctype>
 # include <iostream>
-# include "tokens.h"
+# include "parser.h"
 # include "lexer.h"
 
+using namespace std;
 int lookahead;
-/*
- * Function:	error
- *
- * Description:	Report a syntax error to standard error.
- */
-
-static void error()
-{
-  if (lookahead == DONE)
-    report("syntax error at end of file");
-  else
-    report("syntax error at '%s'", lexbuf);
-  exit(EXIT_FAILURE);
-}
 
 /*
  * Function:	match
@@ -31,39 +18,26 @@ static void match(int t)
 {
   if (t == lookahead)
     lookahead = yylex();
-  else error();
+  else report("syntax error");
 }
 
 static void exprOR() {
-  exprOR_prime();
-}
-
-static void exprOR_prime()
-{
   exprAND();
-  while(1) {
-    if(la == OR) {
-      match(OR);
-      exprAND()
-      cout << "or" << endl;
-    } else break;
+  while(lookahead == OR) {
+    match(OR);
+    exprAND();
+    cout << "or" << endl;
   }
 }
 
+
 static void exprAND()
 {
-  exprAND_prime();
-}
-
-static void exprAND_prime()
-{
   exprEQ();
-  while(1) {
-    if(la == AND) {
-      match(AND);
-      exprEQ();
-      cout << "and" << endl;
-    } else break;
+  while(lookahead == AND) {
+    match(AND);
+    exprEQ();
+    cout << "and" << endl;
   }
 }
 
@@ -71,12 +45,12 @@ static void exprEQ()
 {
   exprCMP();
   while(1) {
-    if(la == EQUAL) {
+    if(lookahead == EQUAL) {
       match(EQUAL);
       exprCMP();
       cout << "eql" << endl;
     }
-    else if(la == NOT_EQUAL) {
+    else if(lookahead == NOT_EQUAL) {
       match(NOT_EQUAL);
       exprCMP();
       cout << "neq" << endl;
@@ -84,13 +58,111 @@ static void exprEQ()
   }
 }
 
-stativ void exprCMP()
+static void exprCMP()
 {
-  
+  exprADDSUB();
+  while(1) {
+    if(lookahead == '<') {
+        match('<');
+        exprADDSUB();
+        cout << "ltn" << endl;
+    } else if(lookahead == '>') {
+        match('>');
+        exprADDSUB();
+        cout << "gtn" << endl;
+    } else if(lookahead == LESS_THAN) {
+        match(LESS_THAN);
+        exprADDSUB();
+        cout << "leq" << endl;
+    } else if(lookahead == GREATER_THAN) {
+        match(GREATER_THAN);
+        exprADDSUB();
+        cout << "geq" << endl;
+    } else break;
+  }  
+}
+
+static void exprADDSUB() {
+    exprMULT();
+    while(1) {
+        if(lookahead == '+') {
+            match('+');
+            exprMULT();
+            cout << "add" << endl;
+        }
+        else if(lookahead == '-') {
+            match('-');
+            exprPREFIX();
+            cout << "sub" << endl;
+        }
+        else {
+            break;
+        }
+    }
+}
+
+static void exprMULT() {
+    exprPREFIX();
+    while(1) {
+        if(lookahead == '*') {
+            match('*');
+            exprPREFIX();
+            cout << "mul" << endl;
+        } else if(lookahead == '/') {
+            match('/');
+            exprPREFIX();
+            cout << "div" << endl;
+        }else if(lookahead == '%') {
+            match('%');
+            exprPREFIX();
+            cout << "rem" << endl;
+        } else break;
+    }
+}
+
+static void exprPREFIX() {
+    exprPOSFIX();
+    while(1) {
+        if(lookahead == '&') {
+            match('&');
+            exprPOSFIX();
+            cout << "addr" << endl;
+        } else if(lookahead == '*') {
+            match('*');
+            exprPOSFIX();
+            cout << "deref" << endl;
+        } else if(lookahead == '!') {
+            match('!');
+            exprPOSFIX();
+            cout << "not" << endl;
+        } else if(lookahead == '-') {
+            match('-');
+            exprPOSFIX();
+            cout << "neg" << endl;
+        } else if(lookahead == SIZEOF) {
+            match(SIZEOF);
+            exprPOSFIX();
+            cout << "sizeof" << endl;
+        } else break;
+   }
+}
+
+static void exprPOSFIX() {
+    exprPRIMARY();
+    while(lookahead == '[') {    
+        match('[');
+        exprPRIMARY();
+        match(']');
+        cout << "index" << endl;
+    }
+}
+
+static void exprPRIMARY() {
+    cout << lookahead << endl;
 }
 
 int main() {
   lookahead = yylex();
-  exprOR();
-  return 0;
+  while(lookahead != 0) 
+    exprOR();
 }
