@@ -60,34 +60,34 @@ static void ignoreComment();
 "&&"				{return AND;}
 "=="				{return EQUAL;}
 "!="				{return NOT_EQUAL;}
-"<="				{return LESS_THAN;}
-">="				{return GREATER_THAN;}
+"<="				{return LESS_THANEQ;}
+">="				{return GREATER_THANEQ;}
 "++"				{return INCREMENT;}
 "--"				{return DECREMENT;}
 "->"				{return ARROW;}
 "..."				{return ELLIPSIS;}
 
-"-"					{return OPERATOR;}
-"="					{return OPERATOR;}
-"|"					{return OPERATOR;}
-"<"					{return OPERATOR;}
-">"					{return OPERATOR;}
-"+"					{return OPERATOR;}
-"*"					{return OPERATOR;}
-"/"					{return OPERATOR;}
-"%"					{return OPERATOR;}
-"&"					{return OPERATOR;}
-"!"					{return OPERATOR;}
-"("					{return OPERATOR;}
-")"					{return OPERATOR;}
-"["					{return OPERATOR;}
-"]"					{return OPERATOR;}
-"{"					{return OPERATOR;}
-"}"					{return OPERATOR;}
-";"					{return OPERATOR;}
-":"					{return OPERATOR;}
-"."					{return OPERATOR;}
-","					{return OPERATOR;}
+"-"					{return MINUS;}
+"="					{return ASSIGN;}
+"|"					{return PIPE;}
+"<"					{return LESS_THAN;}
+">"					{return GREATER_THAN;}
+"+"					{return PLUS;}
+"*"					{return MULT;}
+"/"					{return DIV;}
+"%"					{return MOD;}
+"&"					{return B_AND;}
+"!"					{return NOT;}
+"("					{return LEFT_PARAN;}
+")"					{return RIGHT_PARAN;}
+"["					{return LEFT_BRACKET;}
+"]"					{return RIGHT_BRACKET;}
+"{"					{return LEFT_BRACE;}
+"}"					{return RIGHT_BRACE;}
+";"					{return SEMICOLON;}
+":"					{return COLON;}
+"."					{return DOT;}
+","					{return COMMA;}
 
 0|[1-9][0-9]*			{return NUM;}
 0[xX][0-9a-fA-F]+		{return NUM;}
@@ -166,4 +166,3 @@ static void printToken(const string &label)
  *
  * Description:	Analyze the standard input stream.
  */
-
