@@ -7,11 +7,12 @@ for file in examples/*.c;
 do
     filename=${file%.c}
     echo "------------------------"
-    echo "Testing Against: ${filename}"    
+    echo "Testing Against: ${filename}"
     cp ${filename}.c test.c
-    cp ${filename}.out test.out
-    ./scc < test.c > test.txt
-	diff test.txt test.out
+    cp ${filename}.err test.err
+    ./scc < test.c 2> myTest.err
+	diff myTest.err test.err
 done
 rm test.c
-rm test.out
+rm test.err
+rm myTest.err
