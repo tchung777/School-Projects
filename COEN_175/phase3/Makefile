@@ -1,5 +1,5 @@
 CXX		= g++
-CXXFLAGS	= -g -Wall
+CXXFLAGS	= -g -Wall -std=c++11
 EXTRAS		= lexer.cpp
 OBJS		= lexer.o parser.o Type.o Symbol.o Scope.o checker.o
 PROG		= scc

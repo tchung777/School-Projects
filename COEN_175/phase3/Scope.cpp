@@ -42,7 +42,7 @@ Symbol* Scope::lookup(const string &name) const {
 
 void Scope::printAll() {
 	std::cout << "Symbol element include:" << std::endl;
-	for(int i = 0; i < _symbols.size(); i++) {
+	for(unsigned i = 0; i < _symbols.size(); i++) {
 		std::cout << _symbols[i]->getName() << std::endl;
 	}
 }
