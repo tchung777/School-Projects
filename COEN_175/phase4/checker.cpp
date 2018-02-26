@@ -516,7 +516,7 @@ Type checkArray(const Type &left, const Type &right) {
   Type left_type = left.promote();
   Type right_type = right.promote();
 
-  if((left.isPointer() && left != voidPointer) && right.isInteger()) {
+  if((left_type.isPointer() && left_type != voidPointer) && right_type.isInteger()) {
     return Type(left_type.specifier(), left_type.indirection()-1);
   }
   else {
