@@ -10,26 +10,23 @@ do
     echo "Testing Against: ${filename}"
     cp ${filename}.c test.c
     cp ${filename}$b.c testlib.c
-    if [ "$?" != "0" ]; then
-      cp ${filename}.out test.out
-      ./scc < test.c > myTest.s
+    cp ${filename}.out test.out
+    ./scc < test.c > myTest.s
+    if [ testlib.c ]; then
       gcc -m32 -w myTest.s testlib.c
-      ./a.out > myTest.out
-      diff test.out myTest.out
     else
-      cp ${filename}.out test.out
-      ./scc < test.c > myTest.s
       gcc -m32 -w myTest.s
-      ./a.out > myTest.out
-      diff test.out myTest.out
     fi
+    ./a.out > myTest.out
+    diff test.out myTest.out
+
+    rm test.c
+    rm testlib.c
+    rm test.out
+    rm myTest.s
+    rm myTest.out
   fi
 done
-rm test.c
-rm testlib.c
-rm test.out
-rm myTest.s
-rm myTest.out
 
 : '
 do
