@@ -9,7 +9,8 @@ do
     echo "------------------------"
     echo "Testing Against: ${filename}"
     cp ${filename}.c test.c
-    if [ "cp ${filename}$b.c testlib.c" = "" ]; then
+    cp ${filename}$b.c testlib.c
+    if [ "$?" = "0" ]; then
       cp ${filename}.out test.out
       ./scc < test.c > myTest.s
       gcc -m32 -w myTest.s testlib.c
