@@ -10,7 +10,7 @@ do
     echo "Testing Against: ${filename}"
     cp ${filename}.c test.c
     cp ${filename}$b.c testlib.c
-    if [ $? -ne 0 ]; then
+    if [ $? -ne 1 ]; then
       cp ${filename}.out test.out
       ./scc < test.c > myTest.s
       gcc -m32 -w myTest.s testlib.c
