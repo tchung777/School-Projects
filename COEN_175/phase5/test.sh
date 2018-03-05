@@ -22,6 +22,7 @@ do
       gcc -m32 -w myTest.s
       ./a.out > myTest.out
       diff test.out myTest.out
+    fi
   fi
 done
 rm test.c
