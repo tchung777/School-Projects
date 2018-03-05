@@ -11,7 +11,7 @@ do
     cp ${filename}.c test.c
     cp ${filename}$b.c testlib.c
     cp ${filename}.out test.out
-    ./scc < test.c > myTest.s
+    ./scc < test.c > myTest.s testlib.c
     gcc -m32 -w myTest.s
     ./a.out > myTest.out
     diff test.out myTest.out
