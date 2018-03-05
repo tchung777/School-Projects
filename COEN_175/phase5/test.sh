@@ -10,9 +10,11 @@ do
     echo "Testing Against: ${filename}"
     cp ${filename}.c test.c
     cp ${filename}$b.c testlib.c
+    cp ${filename}.out test.out
     ./scc < test.c > myTest.s
     gcc -m32 test.s testlib.c
-    ./a.out
+    ./a.out > myTest.out
+    diff test.out myTest.out
   fi
 done
 
