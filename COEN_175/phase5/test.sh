@@ -17,6 +17,11 @@ do
     diff test.out myTest.out
   fi
 done
+rm test.c
+rm testlib.c
+rm test.out
+rm myTest.s
+rm myTest.out
 
 : '
 do
