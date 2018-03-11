@@ -1,0 +1,3 @@
+line 10: invalid operands to binary &&
+line 13: invalid operand to unary sizeof
+line 14: invalid operand to unary -
