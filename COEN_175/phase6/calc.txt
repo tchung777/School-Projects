@@ -296,11 +296,8 @@ _main:
 	cmpl	$0, -80(%ebp)
 	jne	.WHILE10
 .WHILE9:
-	movl	$1, %eax
-	negl	%eax
-	movl	%eax, -84(%ebp)
 	movl	_lookahead, %eax
-	cmpl	-84(%ebp), %eax
+	cmpl	$-1, %eax
 	setne	%al
 	movzbl	%al, %eax
 	movl	%eax, -88(%ebp)

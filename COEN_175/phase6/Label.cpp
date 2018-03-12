@@ -1,15 +1,15 @@
-#include "label.h"
+#include "Label.h"
 
 unsigned Label::_counter = 0;
 
 Label::Label() {
-  _number = _counter;
+  _number = _counter++;
 }
 
-unsigned Label::number() const {
+unsigned Label::number() const{
   return _number;
 }
 
-ostream &operator<< (std::ostream &os, const Label  &lbl) {
+std::ostream &operator<<(std::ostream &os, const Label &lbl) {
   return os << ".L" << lbl.number();
 }

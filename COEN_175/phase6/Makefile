@@ -1,7 +1,8 @@
 CXX		= g++
 CXXFLAGS	= -g -Wall -Wno-c++0x-compat
 EXTRAS		= lexer.cpp
-OBJS		= Scope.o Symbol.o Tree.o Type.o checker.o lexer.o parser.o generator.o allocator.o
+OBJS		= Scope.o Symbol.o Tree.o Type.o allocator.o checker.o \
+		  generator.o lexer.o parser.o Label.o
 PROG		= scc
 
 

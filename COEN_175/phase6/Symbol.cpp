@@ -18,9 +18,8 @@ using std::string;
  */
 
 Symbol::Symbol(const string &name, const Type &type)
-    : _name(name), _type(type), _attributes(0)
+    : _name(name), _type(type), _attributes(0), _offset(0)
 {
-  _offset = 0;
 }
 
 

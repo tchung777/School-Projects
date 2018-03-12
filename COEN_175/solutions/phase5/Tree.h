@@ -44,10 +44,6 @@ public:
     virtual ~Node() {}
     virtual void allocate(int &offset) const {}
     virtual void generate() {}
-    virtual void generate(bool &indirect) {
-        indirect = false;
-        generate();
-    }
 };
 
 
@@ -83,7 +79,6 @@ class String : public Expression {
 public:
     String(const string &value);
     const string &value() const;
-    virtual void generate();
 };
 
 
@@ -131,7 +126,6 @@ class Not : public Expression {
 
 public:
     Not(Expression *expr, const Type &type);
-    virtual void generate();
 };
 
 
@@ -142,7 +136,6 @@ class Negate : public Expression {
 
 public:
     Negate(Expression *expr, const Type &type);
-    virtual void generate();
 };
 
 
@@ -153,8 +146,6 @@ class Dereference : public Expression {
 
 public:
     Dereference(Expression *expr, const Type &type);
-    virtual void generate();
-    virtual void generate(bool &indirect);
 };
 
 
@@ -165,7 +156,6 @@ class Address : public Expression {
 
 public:
     Address(Expression *expr, const Type &type);
-    virtual void generate();
 };
 
 
@@ -176,7 +166,6 @@ class Promote : public Expression {
 
 public:
     Promote(Expression *expr);
-    virtual void generate();
 };
 
 
@@ -187,7 +176,6 @@ class Multiply : public Expression {
 
 public:
     Multiply(Expression *left, Expression *right, const Type &type);
-    virtual void generate();
 };
 
 
@@ -198,7 +186,6 @@ class Divide : public Expression {
 
 public:
     Divide(Expression *left, Expression *right, const Type &type);
-    virtual void generate();
 };
 
 
@@ -209,7 +196,6 @@ class Remainder : public Expression {
 
 public:
     Remainder(Expression *left, Expression *right, const Type &type);
-    virtual void generate();
 };
 
 
@@ -220,7 +206,6 @@ class Add : public Expression {
 
 public:
     Add(Expression *left, Expression *right, const Type &type);
-    virtual void generate();
 };
 
 
@@ -231,7 +216,6 @@ class Subtract : public Expression {
 
 public:
     Subtract(Expression *left, Expression *right, const Type &type);
-    virtual void generate();
 };
 
 
@@ -242,7 +226,6 @@ class LessThan : public Expression {
 
 public:
     LessThan(Expression *left, Expression *right, const Type &type);
-    virtual void generate();
 };
 
 
@@ -253,7 +236,6 @@ class GreaterThan : public Expression {
 
 public:
     GreaterThan(Expression *left, Expression *right, const Type &type);
-    virtual void generate();
 };
 
 
@@ -264,7 +246,6 @@ class LessOrEqual : public Expression {
 
 public:
     LessOrEqual(Expression *left, Expression *right, const Type &type);
-    virtual void generate();
 };
 
 
@@ -275,7 +256,6 @@ class GreaterOrEqual : public Expression {
 
 public:
     GreaterOrEqual(Expression *left, Expression *right, const Type &type);
-    virtual void generate();
 };
 
 
@@ -286,7 +266,6 @@ class Equal : public Expression {
 
 public:
     Equal(Expression *left, Expression *right, const Type &type);
-    virtual void generate();
 };
 
 
@@ -297,7 +276,6 @@ class NotEqual : public Expression {
 
 public:
     NotEqual(Expression *left, Expression *right, const Type &type);
-    virtual void generate();
 };
 
 
@@ -308,7 +286,6 @@ class LogicalAnd: public Expression {
 
 public:
     LogicalAnd(Expression *left, Expression *right, const Type &type);
-    virtual void generate();
 };
 
 
@@ -319,7 +296,6 @@ class LogicalOr : public Expression {
 
 public:
     LogicalOr(Expression *left, Expression *right, const Type &type);
-    virtual void generate();
 };
 
 
@@ -349,7 +325,6 @@ class Return : public Statement {
 
 public:
     Return(Expression *expr);
-    virtual void generate();
 };
 
 
@@ -376,7 +351,6 @@ class While : public Statement {
 public:
     While(Expression *expr, Statement *stmt);
     virtual void allocate(int &offset) const;
-    virtual void generate();
 };
 
 
@@ -391,7 +365,6 @@ class For : public Statement {
 public:
     For(Statement *init, Expression *expr, Statement *incr, Statement *stmt);
     virtual void allocate(int &offset) const;
-    virtual void generate();
 };
 
 
@@ -404,7 +377,6 @@ class If : public Statement {
 public:
     If(Expression *expr, Statement *thenStmt, Statement *elseStmt);
     virtual void allocate(int &offset) const;
-    virtual void generate();
 };
 
 
