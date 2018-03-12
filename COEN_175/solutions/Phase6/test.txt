@@ -1,0 +1,22 @@
+_main:
+	pushl	%ebp
+	movl	%esp, %ebp
+	subl	$main.size, %esp
+	movl	-4(%ebp), %eax
+	cmpl	-8(%ebp), %eax
+	setl	%al
+	movzbl	%al, %eax
+	movl	%eax, -92(%ebp)
+	cmpl	$0, -92(%ebp)
+	je	.IF1
+	jmp	.IF0
+.IF1:
+.IF0:
+.F0:
+	movl	%ebp, %esp
+	popl	%ebp
+	ret
+
+	.globl	_main
+	.set	main.size, 104
+

@@ -8,36 +8,34 @@ _lexan:
 	movzbl	%al, %eax
 	movl	%eax, -12(%EBP)
 	cmpl	$0, -12(%EBP)
-	je	.L0
+	je	_L0
 	call	_getchar
 	movl	, %eax
-.L0:
-	jmp	.L3
-.L2:
+_L0:
+	jmp	_L3
+_L2:
 	call	_getchar
 	movl	, %eax
-.L3:
-	movl	_c, %eax
+_L3:
 	movl	%eax, 0(%esp)
 	call	_isspace
 	cmpl	$0, 
-	je	.L5
+	je	_L5
 	movl	_c, %eax
 	cmpl	$10, %eax
 	setne	%al
 	movzbl	%al, %eax
 	movl	%eax, -20(%EBP)
 	cmpl	$0, -20(%EBP)
-	je	.L5
+	je	_L5
 	movl	$1, %eax
-	jmp	.L4
-.L5:
+	jmp	_L4
+_L5:
 	movl	$0, %eax
-.L4:
+_L4:
 	movl	%eax, -16(%EBP)
 	cmpl	$0, -16(%EBP)
-	jne	.L2
-	movl	_c, %eax
+	jne	_L2
 	movl	%eax, 0(%esp)
 	call	_isdigit
 	movl	, %eax
@@ -46,15 +44,15 @@ _lexan:
 	movzbl	%al, %eax
 	movl	%eax, -24(%EBP)
 	cmpl	$0, -24(%EBP)
-	je	.L6
+	je	_L6
 	movl	_c, %eax
 	movl	$0, %eax
 	movl	-8(%ebp), %eax
 	jmp	0x0
-.L6:
+_L6:
 	movl	$0, %eax
-	jmp	.L9
-.L8:
+	jmp	_L9
+_L8:
 	movl	-4(%ebp), %eax
 	imull	$10, %eax
 	movl	%eax, -28(%EBP)
@@ -67,12 +65,11 @@ _lexan:
 	movl	-36(%EBP), %eax
 	call	_getchar
 	movl	, %eax
-.L9:
-	movl	_c, %eax
+_L9:
 	movl	%eax, 0(%esp)
 	call	_isdigit
 	cmpl	$0, 
-	jne	.L8
+	jne	_L8
 	movl	-4(%ebp), %eax
 	movl	_NUM, %eax
 	jmp	0x0
@@ -93,18 +90,15 @@ _match:
 	movzbl	%al, %eax
 	movl	%eax, -4(%EBP)
 	cmpl	$0, -4(%EBP)
-	je	.L10
-	movl	_lookahead, %eax
+	je	_L10
 	movl	%eax, 4(%esp)
 	leal	, %eax
 	movl	%eax, -8(%EBP)
-	movl	-8(%EBP), %eax
 	movl	%eax, 0(%esp)
 	call	_printf
-	movl	$1, %eax
 	movl	%eax, 0(%esp)
 	call	_exit
-.L10:
+_L10:
 	call	_lexan
 	movl	, %eax
 	movl	%ebp, %esp
@@ -124,20 +118,17 @@ _factor:
 	movzbl	%al, %eax
 	movl	%eax, -8(%EBP)
 	cmpl	$0, -8(%EBP)
-	je	.L13
-	movl	$40, %eax
+	je	_L13
 	movl	%eax, 0(%esp)
 	call	_match
 	call	_expr
 	movl	, %eax
-	movl	$41, %eax
 	movl	%eax, 0(%esp)
 	call	_match
 	movl	-4(%ebp), %eax
 	jmp	0x0
-.L13:
+_L13:
 	movl	_lexval, %eax
-	movl	_NUM, %eax
 	movl	%eax, 0(%esp)
 	call	_match
 	movl	-4(%ebp), %eax
@@ -155,16 +146,15 @@ _term:
 	subl	$term.size, %esp
 	call	_factor
 	movl	, %eax
-	jmp	.L16
-.L15:
+	jmp	_L16
+_L15:
 	movl	_lookahead, %eax
 	cmpl	$42, %eax
 	sete	%al
 	movzbl	%al, %eax
 	movl	%eax, -8(%EBP)
 	cmpl	$0, -8(%EBP)
-	je	.L19
-	movl	$42, %eax
+	je	_L19
 	movl	%eax, 0(%esp)
 	call	_match
 	call	_factor
@@ -172,16 +162,15 @@ _term:
 	imull	, %eax
 	movl	%eax, -12(%EBP)
 	movl	-12(%EBP), %eax
-	jmp	.L17
-.L19:
+	jmp	_L17
+_L19:
 	movl	_lookahead, %eax
 	cmpl	$47, %eax
 	sete	%al
 	movzbl	%al, %eax
 	movl	%eax, -16(%EBP)
 	cmpl	$0, -16(%EBP)
-	je	.L22
-	movl	$47, %eax
+	je	_L22
 	movl	%eax, 0(%esp)
 	call	_match
 	call	_factor
@@ -191,14 +180,14 @@ _term:
 	idivl	%ecx
 	movl	%eax, -20(%EBP)
 	movl	-20(%EBP), %eax
-	jmp	.L20
-.L22:
-.L20:
-.L17:
-.L16:
+	jmp	_L20
+_L22:
+_L20:
+_L17:
+_L16:
 	movl	$1, %eax
 	cmpl	$0, %eax
-	jne	.L15
+	jne	_L15
 	movl	-4(%ebp), %eax
 	jmp	0x0
 	movl	%ebp, %esp
@@ -214,16 +203,15 @@ _expr:
 	subl	$expr.size, %esp
 	call	_term
 	movl	, %eax
-	jmp	.L24
-.L23:
+	jmp	_L24
+_L23:
 	movl	_lookahead, %eax
 	cmpl	$43, %eax
 	sete	%al
 	movzbl	%al, %eax
 	movl	%eax, -8(%EBP)
 	cmpl	$0, -8(%EBP)
-	je	.L27
-	movl	$43, %eax
+	je	_L27
 	movl	%eax, 0(%esp)
 	call	_match
 	call	_term
@@ -231,16 +219,15 @@ _expr:
 	addl	, %eax
 	movl	%eax, -12(%EBP)
 	movl	-12(%EBP), %eax
-	jmp	.L25
-.L27:
+	jmp	_L25
+_L27:
 	movl	_lookahead, %eax
 	cmpl	$45, %eax
 	sete	%al
 	movzbl	%al, %eax
 	movl	%eax, -16(%EBP)
 	cmpl	$0, -16(%EBP)
-	je	.L30
-	movl	$45, %eax
+	je	_L30
 	movl	%eax, 0(%esp)
 	call	_match
 	call	_term
@@ -248,14 +235,14 @@ _expr:
 	subl	, %eax
 	movl	%eax, -20(%EBP)
 	movl	-20(%EBP), %eax
-	jmp	.L28
-.L30:
-.L28:
-.L25:
-.L24:
+	jmp	_L28
+_L30:
+_L28:
+_L25:
+_L24:
 	movl	$1, %eax
 	cmpl	$0, %eax
-	jne	.L23
+	jne	_L23
 	movl	-4(%ebp), %eax
 	jmp	0x0
 	movl	%ebp, %esp
@@ -271,31 +258,28 @@ _main:
 	subl	$main.size, %esp
 	call	_lexan
 	movl	, %eax
-	jmp	.L32
-.L31:
+	jmp	_L32
+_L31:
 	call	_expr
 	movl	, %eax
-	movl	-4(%ebp), %eax
 	movl	%eax, 4(%esp)
 	leal	, %eax
 	movl	%eax, -8(%EBP)
-	movl	-8(%EBP), %eax
 	movl	%eax, 0(%esp)
 	call	_printf
-	jmp	.L35
-.L34:
-	movl	$10, %eax
+	jmp	_L35
+_L34:
 	movl	%eax, 0(%esp)
 	call	_match
-.L35:
+_L35:
 	movl	_lookahead, %eax
 	cmpl	$10, %eax
 	sete	%al
 	movzbl	%al, %eax
 	movl	%eax, -12(%EBP)
 	cmpl	$0, -12(%EBP)
-	jne	.L34
-.L32:
+	jne	_L34
+_L32:
 	movl	$1, %eax
 	negl	%eax
 	movl	%eax, -16(%EBP)
@@ -305,7 +289,7 @@ _main:
 	movzbl	%al, %eax
 	movl	%eax, -20(%EBP)
 	cmpl	$0, -20(%EBP)
-	jne	.L31
+	jne	_L31
 	movl	%ebp, %esp
 	popl	%ebp
 	ret

@@ -80,13 +80,6 @@ void Number::generate()
 
 # if STACK_ALIGNMENT == 4
 
-/*
-* Function:	Call::generate
-*
-* Description:	Generate code for a function call expression, in which each
-*		argument is simply a variable or an integer literal.
-*/
-
 void Call::generate()
 {
   unsigned numBytes = 0;
@@ -459,7 +452,7 @@ void Remainder::generate() {
   cout << "\tmovl\t%edx, " << _operand << endl;
 }
 
-// *EXPRESSIONS ENDS HERE
+// *EXPRESSIONS ENDS HERE-------------
 
 
 void Not::generate() {

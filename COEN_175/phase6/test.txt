@@ -1,0 +1,25 @@
+_main:
+	pushl	%ebp
+	movl	%esp, %ebp
+	subl	$main.size, %esp
+	movl	$1, %eax
+	addl	$2, %eax
+	movl	%eax, -8(%EBP)
+	movl	-8(%EBP), %eax
+	subl	$3, %eax
+	movl	%eax, -12(%EBP)
+	movl	-12(%EBP), %eax
+	movl	%eax, 4(%esp)
+	leal	, %eax
+	movl	%eax, -16(%EBP)
+	movl	%eax, 0(%esp)
+	call	_printf
+	movl	$0, %eax
+	jmp	0x0
+	movl	%ebp, %esp
+	popl	%ebp
+	ret
+
+	.globl	_main
+	.set	main.size, 24
+
