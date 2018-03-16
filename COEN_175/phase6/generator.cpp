@@ -455,49 +455,36 @@ void Negate::generate() {
 }
 
 void Dereference::generate(){
-    _expr->generate();
-    assignTemp(this);
+  _expr->generate();
+  assignTemp(this);
 
-    int exprLength = _expr->type().size();
+  cout << "\tmovl\t" << _expr << ", %eax" << endl;
 
-    if (exprLength == 1) {
-        cout << "\tmovb\t" << _expr << ", %al" << endl;
-        cout << "\tmovb\t%al, " << _operand  << endl;
-    } else if (exprLength == 4) {
-        cout << "\tmovl\t" << _expr << ", %eax" << endl;
-        cout << "\tmovl\t%eax, " << _operand  << endl;
-    }
+  if(_type.size() != SIZEOF_CHAR){
+    cout << "\tmovl\t(%eax), %eax" << endl;
+  }else {
+    cout << "\tmovsbl\t(%eax), %eax" << endl;
+  }
+
+  cout << "\tmovl\t%eax, " << _operand << endl;
 }
 
 void Dereference::generate(bool &indirect) {
-    _expr->generate();
-    assignTemp(this);
-    indirect = true;
-
-    int exprLength = _expr->type().size();
-
-    if (exprLength == 1) {
-        cout << "\tmovb\t" << _expr << ", %al" << endl;
-        cout << "\tmovb\t%al, " << _operand  << endl;
-    } else if (exprLength == 4) {
-        cout << "\tmovl\t" << _expr << ", %eax" << endl;
-        cout << "\tmovl\t%eax, " << _operand  << endl;
-    }
+  indirect = true;
+  _expr->generate();
+  _operand = _expr->_operand;
 }
 
 void Address::generate() {
-    bool indirect;
-    _expr->generate(indirect);
-
-    if (indirect) {
-        _operand = _expr->_operand;
-    } else {
-        assignTemp(this);
-
-        cout << "\tleal\t" << _expr << ", %eax" << endl;
-        cout << "\tmovl\t%eax, " << _operand << endl;
-
-    }
+  bool indirect;
+  _expr->generate(indirect);
+  if(indirect){
+    _operand = _expr->_operand;
+  }else{
+    assignTemp(this);
+    cout << "\tleal\t" << _expr << ", %eax" << endl;
+    cout << "\tmovl\t%eax, " << _operand << endl;
+  }
 }
 
 void Promote::generate() {
@@ -577,6 +564,7 @@ void While::generate() {
 void String::generate() {
     Label stringLabel;
     stringstream ss;
+    ss << stringLabel;
     labelBuff.push_back(ss.str() +":\t.asciz\t" + _value);
 
     _operand = ss.str();

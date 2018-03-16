@@ -111,7 +111,7 @@ _match:
 	je		_L11
 	movl	_lookahead, %eax
 	movl	%eax, 4(%esp)
-	leal	, %eax
+	leal	_L13, %eax
 	movl	%eax, -8(%ebp)
 	movl	-8(%ebp), %eax
 	movl	%eax, 0(%esp)
@@ -326,7 +326,7 @@ _L32:
 	movl	%eax, -4(%ebp)
 	movl	-4(%ebp), %eax
 	movl	%eax, 4(%esp)
-	leal	, %eax
+	leal	_L34, %eax
 	movl	%eax, -16(%ebp)
 	movl	-16(%ebp), %eax
 	movl	%eax, 0(%esp)
