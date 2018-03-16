@@ -43,11 +43,7 @@ protected:
 public:
     virtual ~Node() {}
     virtual void allocate(int &offset) const {}
-    virtual void generate();
-    virtual void generate(bool &indirect) {
-        indirect = false;
-        generate();
-    }
+    virtual void generate() {}
 };
 
 
