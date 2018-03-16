@@ -280,7 +280,7 @@ void LogicalAnd::generate() {
 	cout << "movl\t" << _right << ",%eax" << endl;
 	cout << "cmpl\t$0,%eax" << endl;
 	cout << andLabel << ":" << endl;
-	cout << "\tsete\t%al" << endl;
+	cout << "\tsetne\t%al" << endl;
 	cout << "\tmovzbl\t%al,%eax" << endl;
 	cout << "\tmovl\t%eax," << _operand << endl;
 
