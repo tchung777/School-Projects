@@ -12,5 +12,6 @@ unsigned Label::number() const{
 }
 
 std::ostream &operator<<(std::ostream &os, const Label &lbl) {
-  return os << global_prefix << label_prefix << lbl.number();
+  return os << ".L" << lbl.number();
+  //return os << global_prefix << label_prefix << lbl.number();
 }

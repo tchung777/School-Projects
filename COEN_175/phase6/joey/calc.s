@@ -57,7 +57,7 @@ cmpl	$0,%eax
 	movl	$0, %eax
 	movl	%eax, _c
 	movl	-8(%ebp), %eax
-	jmp	.L0
+	jmp		.L0
 .L6:
 .L7:
 	movl	$0, %eax
@@ -74,7 +74,7 @@ cmpl	$0,%eax
 	movl	%eax, -28(%ebp)
 	movl	-28(%ebp), %eax
 	addl	_c, %eax
-	movl	%eax, -32(%ebp)
+	movl	%eax,-32(%ebp)
 	movl	-32(%ebp), %eax
 	subl	$48, %eax
 	movl	%eax, -36(%ebp)
@@ -88,7 +88,7 @@ cmpl	$0,%eax
 	movl	-4(%ebp), %eax
 	movl	%eax, _lexval
 	movl	_NUM, %eax
-	jmp	.L0
+	jmp		.L0
 .L0:
 	movl	%ebp, %esp
 	popl	%ebp
@@ -154,7 +154,7 @@ _factor:
 	movl	%eax, 0(%esp)
 	call	_match
 	movl	-4(%ebp), %eax
-	jmp	.L14
+	jmp		.L14
 .L15:
 .L16:
 	movl	_lexval, %eax
@@ -163,7 +163,7 @@ _factor:
 	movl	%eax, 0(%esp)
 	call	_match
 	movl	-4(%ebp), %eax
-	jmp	.L14
+	jmp		.L14
 .L14:
 	movl	%ebp, %esp
 	popl	%ebp
@@ -229,7 +229,7 @@ _term:
 	jmp		.L18
 .L19:
 	movl	-4(%ebp), %eax
-	jmp	.L17
+	jmp		.L17
 .L17:
 	movl	%ebp, %esp
 	popl	%ebp
@@ -263,7 +263,7 @@ _expr:
 	call	_term
 	movl	-4(%ebp), %eax
 	addl	, %eax
-	movl	%eax, -12(%ebp)
+	movl	%eax,-12(%ebp)
 	movl	-12(%ebp), %eax
 	movl	%eax, -4(%ebp)
 	jmp		.L28
@@ -293,7 +293,7 @@ _expr:
 	jmp		.L25
 .L26:
 	movl	-4(%ebp), %eax
-	jmp	.L24
+	jmp		.L24
 .L24:
 	movl	%ebp, %esp
 	popl	%ebp
