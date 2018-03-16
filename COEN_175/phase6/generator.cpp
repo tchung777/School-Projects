@@ -574,7 +574,7 @@ void While::generate() {
 void String::generate() {
     Label stringLabel;
     stringstream ss;
-    labelBuff.push_back(ss_label.str() +":\t.asciz\t" + _value);
+    labelBuff.push_back(ss.str() +":\t.asciz\t" + _value);
 
     _operand = ss.str();
 }
