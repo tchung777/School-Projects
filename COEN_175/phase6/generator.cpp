@@ -146,21 +146,25 @@ void Call::generate()
 void Assignment::generate()
 {
   bool indirect;
-  _left->generate(indirect);
   _right->generate();
+  _left->generate(indirect);
+  cout << "\tmovl\t" << _right << ", %eax" << endl;
 
-  if(indirect) {
-    cout << "\tmovl\t" << _right << ", %eax" << endl;
-    cout << "\tmovl\t" << _left << ", %ecx" << endl;
+  if(_left->type().size() != SIZEOF_INT){
+    if(indirect){
+      cout << "\tmovl\t" << _left << ", %ecx" << endl;
+      cout << "\tmovb\t%al, (%ecx)" << endl;
+    }else {
+      cout << "\tmovb\t%al, " << _left << endl;
+    }
+  }else{
+    if(indirect){
+      cout << "\tmovl\t" << _left << ", %ecx" << endl;
+      cout << "\tmovl\t%eax, (%ecx)" << endl;
+    }else {
+      cout << "\tmovl\t%eax, " << _left << endl;
+    }
 
-    if(_left->type().size() == 1)
-    cout << "\tmovb\t%al, (%ecx)" << endl;
-    else
-    cout << "\tmovl\t%eax, (%ecx)" << endl;
-  } else {
-    cout << "\tmovl\t" << _right << ", %eax" << endl;
-    if(_left -> type().size() == 1)
-    cout << "\tmovb\t%al," << _left << endl;
   }
 }
 
@@ -189,6 +193,7 @@ void Block::generate()
 
 void Function::generate()
 {
+  retLbl = new Label();
   int offset = 0;
 
 
@@ -498,17 +503,15 @@ void Address::generate() {
 void Promote::generate() {
     _expr->generate();
     assignTemp(this);
-    if (_expr->type().size() == 1) {
-        cout << "\tmovl\t%eax, " << _expr << ", %eax" << endl;
-        cout << "\tmovsbl\t%al, %eax" << endl;
-        cout << "\tmovl\t%eax, " << _operand << endl;
-    }
+    cout << "\tmovb\t" << _expr << ", %al" << endl;
+  	cout << "\tmovsbl\t%al, %eax" << endl;
+  	cout << "\tmovl\t%eax, " << this << endl;
 }
 
 void Return::generate() {
     _expr->generate();
     cout << "\tmovl\t" << _expr << ", %eax" << endl;
-    cout << "\tjmp\t" << retLbl<< endl;
+    cout << "\tjmp\t" << *retLbl<< endl;
 }
 
 //------------ Break Statement ------------- //
