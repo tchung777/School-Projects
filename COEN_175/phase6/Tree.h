@@ -43,7 +43,7 @@ protected:
 public:
     virtual ~Node() {}
     virtual void allocate(int &offset) const {}
-    virtual void generate() {}
+    virtual void generate();
     virtual void generate(bool &indirect) {
         indirect = false;
         generate();
@@ -72,6 +72,8 @@ public:
 
     const Type &type() const;
     bool lvalue() const;
+    virtual void generate();
+    virtual void generate(bool &indirect);
 };
 
 
@@ -339,6 +341,7 @@ public:
 class Break : public Statement {
 public:
     Break();
+    virtual void generate();
 };
 
 

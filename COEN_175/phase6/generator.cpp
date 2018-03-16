@@ -19,11 +19,13 @@ using namespace std;
 static unsigned maxargs;
 static int temp_offset;
 Label *retLbl;
+static vector<string> labelBuff;
+static vector<Label> loop_labels;
 
 void assignTemp(Expression * expr) {
   stringstream ss;
   temp_offset -= expr->type().size();
-  ss << temp_offset << "(%EBP)";
+  ss << temp_offset << "(%ebp)";
   expr->_operand = ss.str();
 }
 
@@ -83,7 +85,7 @@ void Number::generate()
 void Call::generate()
 {
   unsigned numBytes = 0;
-
+  assignTemp(this);
 
   for (int i = _args.size() - 1; i >= 0; i --) {
     _args[i]->generate();
@@ -193,6 +195,7 @@ void Function::generate()
   /* Generate our prologue. */
 
   allocate(offset);
+
   cout << global_prefix << _id->name() << ":" << endl;
   cout << "\tpushl\t%ebp" << endl;
   cout << "\tmovl\t%esp, %ebp" << endl;
@@ -212,6 +215,7 @@ void Function::generate()
   while ((offset - PARAM_OFFSET) % STACK_ALIGNMENT)
   offset --;
 
+  cout << *retLbl << ":" << endl;
 
   /* Generate our epilogue. */
 
@@ -244,82 +248,51 @@ void generateGlobals(const Symbols &globals)
   }
 }
 
-static vector<string> labelBuff;
-
  // *EXPRESSIONS*
+ void Expression::generate(bool &indirect){
+    indirect = false;
+    generate();
+}
+
+void Expression::generate(){
+    cerr << "Error in xpression::generate()" << endl;
+}
+
 void LogicalAnd::generate() {
   _left->generate();
-  assignTemp(this);//_operand = getTemp();
+  Label andLabel = Label();
 
-  string lval = _left->_operand;
-  string rval;
-  Label andTrueLabel = Label();
-  Label andFalseLabel = Label();
+  cout << "movl\t" << _left << ",%eax" << endl;
+	cout << "cmpl\t$0,%eax" << endl;
+	cout << "je\t" << andLabel << endl;
 
-  if(lval[0] == '$') {
-      cout << "\tmovl\t" << lval << ", %eax" << endl;
-      lval = "%eax";
-  }
-
-  cout << "\tcmpl\t$0, " << lval << endl;
-  cout << "\tje\t" << andFalseLabel << endl;
-
-  _right->generate();
-  rval = _right->_operand;
-
-  if (rval[0] == '$') {
-      cout << "\tmovl\t" << rval << ", %eax" << endl;
-      rval = "%eax";
-  }
-
-  cout << "\tcmpl\t$0, " << rval << endl;
-  cout << "\tje\t" << andFalseLabel << endl;
-  cout << "\tmovl\t$1, %eax" << endl;
-  cout << "\tjmp\t" << andTrueLabel << endl;
-
-  cout << andFalseLabel << ":" << endl;
-  cout << "\tmovl\t$0, %eax" << endl;
-
-  cout << andTrueLabel << ":" << endl;
-  cout << "\tmovl\t%eax, " << _operand << endl;
+	_right->generate();
+	assignTemp(this);
+	cout << "movl\t" << _right << ",%eax" << endl;
+	cout << "cmpl\t$0,%eax" << endl;
+	cout << andLabel << ":" << endl;
+	cout << "\tsetne\t%al" << endl;
+	cout << "\tmovzbl\t%al,%eax" << endl;
+	cout << "\tmovl\t%eax," << _operand << endl;
 
 }
 
 void LogicalOr::generate() {
   _left->generate();
+  Label orLabel = Label();
+
+  cout << "\tmovl\t" << _left << ",%eax" << endl;
+	cout << "\tcmpl\t$0,%eax" << endl;
+	cout << "\tjne\t" << orLabel << endl;
+
+	_right->generate();
   assignTemp(this);
-
-  string lval = _left->_operand;
-  string rval;
-  Label orTrueLabel = Label();
-  Label orFalseLabel = Label();
-
-  if(lval[0] == '$') {
-      cout << "\tmovl\t" << lval << ", %eax" << endl;
-      lval = "%eax";
-  }
-
-  cout << "\tcmpl\t$0, " << lval << endl;
-  cout << "\tjne\t" << orTrueLabel << endl;
-
-  _right->generate();
-  rval = _right->_operand;
-
-  if (rval[0] == '$') {
-      cout << "\tmovl\t" << rval << ", %eax" << endl;
-      rval = "%eax";
-  }
-
-  cout << "\tcmpl\t$0, " << rval << endl;
-  cout << "\tjne\t" << orTrueLabel << endl;
-
-  cout << "\tjmp\t" << orFalseLabel << endl;
-
-  cout << orTrueLabel << ":" << endl;
-  cout << "\tmovl\t$1, %eax" << endl;
-
-  cout << orFalseLabel << ":" << endl;
-  cout << "\tmovl\t$0, %eax" << endl;
+	cout << "\tmovl\t" << _right << ",%eax" << endl;
+	cout << "\tcmpl\t$0,%eax" << endl;
+	cout << orLabel << ":" << endl;
+	cout << "\tsetne\t%al" << endl;
+	cout << "\tmovzbl\t%al,%eax" << endl;
+	cout << "\tmovl\t%eax," << _operand << endl;
 
 
 }
@@ -469,12 +442,10 @@ void Not::generate() {
 
 void Negate::generate() {
   _expr->generate();
+  assignTemp(this);
 
 	cout << "\tmovl\t" << _expr << ", %eax" << endl;
 	cout << "\tnegl\t%eax" << endl;
-
-	assignTemp(this);
-
 	cout << "\tmovl\t%eax, " << _operand << endl;
 }
 
@@ -513,23 +484,20 @@ void Address::generate() {
     bool indirect;
     _expr->generate(indirect);
 
-    if (_expr->_operand.size() >= 5 && _expr->_operand.substr(0, 4) == "$.LC") {
+    if (indirect) {
         _operand = _expr->_operand;
     } else {
         assignTemp(this);
 
-        if (indirect) {
-            cout << "\tleal\t(%eax), %eax" << endl;
-            cout << "\tmovl\t%eax, " << _operand << endl;
-        } else {
-            cout << "\tleal\t" << _expr << ", %eax" << endl;
-            cout << "\tmovl\t%eax, " << _operand << endl;
-        }
+        cout << "\tleal\t" << _expr << ", %eax" << endl;
+        cout << "\tmovl\t%eax, " << _operand << endl;
+
     }
 }
 
 void Promote::generate() {
     _expr->generate();
+    assignTemp(this);
     if (_expr->type().size() == 1) {
         cout << "\tmovl\t%eax, " << _expr << ", %eax" << endl;
         cout << "\tmovsbl\t%al, %eax" << endl;
@@ -543,79 +511,64 @@ void Return::generate() {
     cout << "\tjmp\t" << retLbl<< endl;
 }
 
+//------------ Break Statement ------------- //
+
+void Break::generate(){
+	cout << "\tjmp\t\t" << loop_labels.back() << endl;
+}
+
 void If::generate() {
-    _expr->generate();
-    string exprVal = _expr->_operand;
-    Label endLabel = Label();
-    Label elseLabel;
+  _expr->generate();
+  Label if_label, else_label;
 
-    if(exprVal[0] == '$') {
-        cout << "\tmovl\t" << exprVal << ", %eax" << endl;
-        exprVal = "%eax";
-    }
+  cout << "\tmovl\t" << _expr << ", %eax" << endl;
+  cout << "\tcmpl\t$0, %eax" << endl;
+  cout << "\tje\t\t" << if_label << endl;
 
-    cout << "\tcmpl\t$0, " << exprVal << endl;
-
-    if (_elseStmt != nullptr) {
-        elseLabel = Label();
-
-        cout << "\tje\t" << elseLabel << endl;
-        _thenStmt->generate();
-        cout << "\tjmp\t" << endLabel << endl;
-
-        cout << elseLabel << ":" << endl;
-        _elseStmt->generate();
-    } else {
-        cout << "\tje\t" << endLabel << endl;
-        _thenStmt->generate();
-    }
-
-    cout << endLabel << ":" << endl;
+  _thenStmt->generate();
+  if( _elseStmt != NULL ){
+    cout << "\tjmp\t\t" << else_label << endl;
+    cout << if_label << ":" << endl;
+    _elseStmt->generate();
+  }else {
+    cout << if_label << ":" << endl;
+  }
+  cout << else_label << ":" << endl;
 }
 
 void For::generate() {
-    Label loopLabel = Label();
-    Label condLabel = Label();
+  Label for_label, exit_for_label;
+  loop_labels.push_back(exit_for_label);
 
-    _init->generate();
+  _init->generate();
+  cout << for_label << ":" << endl;
 
-    cout << "\tjmp\t" << condLabel << endl;
-    cout << loopLabel << ":" << endl;
-    _stmt->generate();
-    _incr->generate();
-    cout << condLabel << ":" << endl;
-    _expr->generate();
+  _expr->generate();
+  cout << "\tmovl\t" << _expr << ", %eax" << endl;
+  cout << "\tcmpl\t$0, %eax" << endl;
+  cout << "\tje\t\t" << exit_for_label << endl;
 
-    string exprVal = _expr->_operand;
-
-    if (exprVal[0] == '$') {
-        cout << "\tmovl\t" << exprVal << ", %eax" << endl;
-        exprVal = "%eax";
-    }
-
-    cout << "\tcmpl\t$0, " << exprVal << endl;
-    cout << "\tjne\t" << loopLabel << endl;
+  _stmt->generate();
+  _incr->generate();
+  cout << "\tjmp\t\t" << for_label << endl;
+  cout << exit_for_label << ":" << endl;
+  loop_labels.pop_back();
 }
 
 void While::generate() {
-    Label loopLabel = Label();
-    Label condLabel = Label();
+  Label while_label, exit_while_label;
+  loop_labels.push_back(exit_while_label);
 
-    cout << "\tjmp\t" << condLabel << endl;
-    cout << loopLabel << ":" << endl;
-    _stmt->generate();
-    cout << condLabel << ":" << endl;
-    _expr->generate();
+  cout << while_label << ":" << endl;
+  _expr->generate();
+  cout << "\tmovl\t" << _expr << ", %eax" << endl;
+  cout << "\tcmpl\t$0, %eax" << endl;
+  cout << "\tje\t\t" << exit_while_label << endl;
 
-    string exprVal = _expr->_operand;
-
-    if (exprVal[0] == '$') {
-        cout << "\tmovl\t" << exprVal << ", %eax" << endl;
-        exprVal = "%eax";
-    }
-
-    cout << "\tcmpl\t$0, " << exprVal << endl;
-    cout << "\tjne\t" << loopLabel << endl;
+  _stmt->generate();
+  cout << "\tjmp\t\t" << while_label << endl;
+  cout << exit_while_label << ":" << endl;
+  loop_labels.pop_back();
 }
 
 void String::generate() {
@@ -624,5 +577,5 @@ void String::generate() {
     ss << stringLabel << ":" << "\t.asciz\t" << _value << endl;
     labelBuff.push_back(ss.str());
 
-    //_operand = stringLabel;
+    _operand = ss.str();
 }
