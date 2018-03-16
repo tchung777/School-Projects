@@ -30,7 +30,7 @@ je	_L5
 movl	-16(%ebp),%eax
 cmpl	$0,%eax
 _L5:
-	setne	%al
+	sete	%al
 	movzbl	%al,%eax
 	movl	%eax,-20(%ebp)
 	movl	-20(%ebp), %eax
