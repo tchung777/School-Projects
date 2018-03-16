@@ -251,6 +251,10 @@ void generateGlobals(const Symbols &globals)
     cout << ", " << globals[i]->type().size();
     cout << ", " << globals[i]->type().alignment() << endl;
   }
+
+  for (int i = 0; i < labelBuff.size(); i++){
+		cout << labelBuff[i] << endl;
+	}
 }
 
  // *EXPRESSIONS*

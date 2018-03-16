@@ -360,3 +360,5 @@ _L31:
 	.comm	_lookahead, 4, 4
 	.comm	_c, 4, 4
 	.comm	_lexval, 4, 4
+_L13:	.asciz	"syntax error at %d\n"
+_L34:	.asciz	"%d\n"
